@@ -20,13 +20,16 @@ public class Unit : MonoBehaviour
 
     public UnitSide _unitSide;// Сторона конфликта юнита
 
-    private float _unitMaxHealth;// Максимльное здоровье юнита
+    private int _unitMoveDistance = 2;// Максимальное количество ходов юнита в клетках
+    /// <summary>
+    /// Максимальное количество ходов юнита в клетках
+    /// </summary>
+    public int UnitMoveDistance { get { return _unitMoveDistance; } }
+
+    private float _unitMaxHealth = 100f;// Максимльное здоровье юнита
     private float _unitCurrentHealth;// Текущее здоровье юнита
-
-    private float _unitAttack;// Урон юнита
-
-    private int _unitMaxMoveDistance;// Максимальное количество ходов юнита в клетках
-    private int _unitCurrentMoveDistance;// Текущее количество ходов юнита в клетках
+    
+    private float _unitAttack = 25f;// Урон юнита
 
     // TO DO! урон от атаки на 33% слабее, если бъет по диагонали
     /// <summary>

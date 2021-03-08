@@ -6,12 +6,12 @@ public class BattleMouseInput : MonoBehaviour
 {
     private GameObject _selectedObject = null;
 
-    private Vector3 _movePosition;
+    private BattlegroundGridManager _battlegroundGridManager = null;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        _movePosition = new Vector3(0,0,0);
+        _battlegroundGridManager = FindObjectOfType<BattlegroundGridManager>();
     }
 
     // Update is called once per frame
@@ -27,33 +27,50 @@ public class BattleMouseInput : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit, 10f))
-            {
-                if (hit.transform.GetComponent<Unit>() && _selectedObject == null)
-                {
-                    _selectedObject = hit.transform.gameObject;
-                    hit.transform.GetComponent<Unit>().isSelected = true;
-                }
-            }
+            SelectUnit();
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))// TO DO NullRefefence
         {
-            if (_selectedObject.GetComponent<Unit>())
-            {
-                _selectedObject.GetComponent<Unit>().isSelected = false;
-            }
-            _selectedObject = null;
+            UnselectUnit();
         }
-
-    }    
-
-    // TO DO
-    public Vector3 GetMovePosition()
+    }
+    
+    private void SelectUnit()
     {
-        return _movePosition;
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit, 10f))
+        {
+            BattlegroundGridNode targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
+
+            if (hit.transform.GetComponent<Unit>() && _selectedObject == null)
+            {
+                _selectedObject = hit.transform.gameObject;
+                _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(true);
+                hit.transform.GetComponent<Unit>().isSelected = true;
+            }
+            else if (targetNode.isOccupied == false && targetNode.isWalkable && _selectedObject)
+            {
+                BattlegroundGridNode unitNode = _battlegroundGridManager.GetNodeByWorldPosition(_selectedObject.transform.position);
+                unitNode.isOccupied = false;
+                _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
+                _selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(_selectedObject.transform.position, hit.transform.position);
+                _selectedObject.GetComponent<Unit>().isSelected = false;
+                _selectedObject = null;
+                Debug.Log($"Unit {hit.transform.name} new move poin is {hit.transform.position}");
+            }
+        }
+    }
+
+    private void UnselectUnit()
+    {
+        if (_selectedObject != null && _selectedObject.GetComponent<Unit>())
+        {
+            _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
+            _selectedObject.GetComponent<Unit>().isSelected = false;
+        }
+        _selectedObject = null;
     }
 }

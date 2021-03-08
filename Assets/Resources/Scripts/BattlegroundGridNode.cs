@@ -15,6 +15,9 @@ public class BattlegroundGridNode
     public Vector3 WorldPosition { get { return _worldPosition; } }
 
     private GameObject _nodeTile;// Префаб тайла ноды для отображения ее статуса
+    public GameObject NodeTile { get { return _nodeTile; } }
+
+    public GameObject occupiedByUnit = null;
 
     // Конструктор класса ноды
     /// <summary>

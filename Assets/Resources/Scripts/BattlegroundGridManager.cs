@@ -54,7 +54,7 @@ public class BattlegroundGridManager : MonoBehaviour
                 for (int j = 0; j < _gridHeigh; j++)
                 {
                     GameObject tile = Instantiate(_nodeTilePrefab, new Vector3(i, 0, j), Quaternion.Euler(90, 0, 0), _gridParentObject.transform);
-                    _grid[i, j] = new BattlegroundGridNode(i, 0, j, true, false, tile);
+                    _grid[i, j] = new BattlegroundGridNode(i, 0, j, false, false, tile);
                 }
             }
         }

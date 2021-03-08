@@ -8,6 +8,9 @@ public class UnitsManager : MonoBehaviour
     [SerializeField] private GameObject _greenUnitsSpawnObject = null;
     [SerializeField] private GameObject _brownUnitsSpawnObject = null;
 
+    private int _greenUnitsAmount = 4;
+    private int _brownUnitsAmount = 4;
+
     // Префабы для юнитов
     private GameObject _greenUnitPrefab = null;
     private GameObject _brownUnitPrefab = null;
@@ -19,7 +22,6 @@ public class UnitsManager : MonoBehaviour
     /// Возвращает ссылку на коллекцию зеленых юнитов
     /// </summary>
     public List<GameObject> GreenUnits { get { return _greenUnits; } }
-
 
     private List<GameObject> _brownUnits;// Коллекция коричневых юнитов
     /// <summary>
@@ -55,35 +57,42 @@ public class UnitsManager : MonoBehaviour
     /// <param name="isSpawningLeft">С какой стороны поля спавнить юниты</param>
     private void SpawnUnits(List<GameObject> units, GameObject unitPrefab, Transform parentObject, bool isSpawningLeft)
     {
+        BattlegroundGridNode node = null;
+
         // Хардкод спавна юнитов слева
         if (isSpawningLeft)
         {
-            units.Add(Instantiate(unitPrefab, new Vector3(0, 0, 0), Quaternion.identity, parentObject.transform));
-            units[0].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[0].transform.position);
+            int zValue = 0;
 
-            units.Add(Instantiate(unitPrefab, new Vector3(0, 0, 2), Quaternion.identity, parentObject.transform));
-            units[1].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[1].transform.position);
+            for (int i = 0; i < _greenUnitsAmount; i++)
+            {
+                units.Add(Instantiate(unitPrefab, new Vector3(0, 0, zValue), Quaternion.identity, parentObject.transform));
+                units[i].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
+                node = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
+                node.occupiedByUnit = units[i];
+                node.isOccupied = true;
+                node.isWalkable = false;
 
-            units.Add(Instantiate(unitPrefab, new Vector3(0, 0, 4), Quaternion.identity, parentObject.transform));
-            units[2].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[2].transform.position);
-
-            units.Add(Instantiate(unitPrefab, new Vector3(0, 0, 6), Quaternion.identity, parentObject.transform));
-            units[3].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[3].transform.position);
+                zValue += 2;
+            }
         }
         // Хардкод спавна юнитов справа
         else
         {
-            units.Add(Instantiate(unitPrefab, new Vector3(7, 0, 0), Quaternion.identity, parentObject.transform));
-            units[0].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[0].transform.position);
+            int xValue = 7;
+            int zValue = 0;
 
-            units.Add(Instantiate(unitPrefab, new Vector3(7, 0, 2), Quaternion.identity, parentObject.transform));
-            units[1].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[1].transform.position);
+            for (int i = 0; i < _brownUnitsAmount; i++)
+            {
+                units.Add(Instantiate(unitPrefab, new Vector3(xValue, 0, zValue), Quaternion.identity, parentObject.transform));
+                units[i].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
+                node = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
+                node.occupiedByUnit = units[i];
+                node.isOccupied = true;
+                node.isWalkable = false;
 
-            units.Add(Instantiate(unitPrefab, new Vector3(7, 0, 4), Quaternion.identity, parentObject.transform));
-            units[2].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[2].transform.position);
-
-            units.Add(Instantiate(unitPrefab, new Vector3(7, 0, 6), Quaternion.identity, parentObject.transform));
-            units[3].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[3].transform.position);
+                zValue += 2;
+            }
         }
     }
 }

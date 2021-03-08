@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 3155017005867561195}
   - component: {fileID: 3155017005867561191}
   - component: {fileID: -7531563565665410799}
+  - component: {fileID: -5878338914187067276}
+  - component: {fileID: 7052719504432679845}
   m_Layer: 0
   m_Name: BrownUnit
   m_TagString: Untagged
@@ -126,3 +128,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitMoveSpeed: 0
+--- !u!114 &-5878338914187067276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155017005867561192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a2261eb73c8480429aa250024858206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7052719504432679845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155017005867561192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec4d9803f66a9e94a88d4d2914ee3c84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

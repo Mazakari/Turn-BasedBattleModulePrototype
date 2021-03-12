@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class UnitsManager : MonoBehaviour
 {
+    public bool isUnitMoving = false;
     // Родительские объекты для юнитов на сцене 
     [SerializeField] private GameObject _greenUnitsSpawnObject = null;
     [SerializeField] private GameObject _brownUnitsSpawnObject = null;
 
     private int _greenUnitsAmount = 4;
+    public int GreenUnitsAmount { get { return _greenUnitsAmount; } }
+
     private int _brownUnitsAmount = 4;
+    public int BrownUnitsAmount { get { return _brownUnitsAmount; } }
 
     // Префабы для юнитов
     private GameObject _greenUnitPrefab = null;

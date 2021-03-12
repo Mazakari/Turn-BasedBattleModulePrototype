@@ -1,5 +1,4 @@
 ﻿// Roman Baranov 07.03.2021
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GridTileHighlight : MonoBehaviour
@@ -55,7 +54,7 @@ public class GridTileHighlight : MonoBehaviour
     {
         if (showColoredTiles)
         {
-            _unitPathfinding.CheckTiles(_battlegroundGridManager.GetNodeByWorldPosition(_unitStartMovePosition), _unit.UnitMoveDistance);
+            _unitPathfinding.CheckTiles(_battlegroundGridManager.GetNodeByWorldPosition(gameObject.transform.position), _unit.UnitMoveDistance);
             ColorTiles(true);
         }
         else
@@ -73,34 +72,43 @@ public class GridTileHighlight : MonoBehaviour
 
         if (showColoredTiles)
         {
-            for (int i = 0; i < _unitPathfinding.MovementTiles.Count; i++)
+            if (_unitPathfinding.MovementTiles != null)
             {
-                node = _battlegroundGridManager.GetNodeByWorldPosition(_unitPathfinding.MovementTiles[i].transform.position);
+                for (int i = 0; i < _unitPathfinding.MovementTiles.Count; i++)
+                {
+                    node = _battlegroundGridManager.GetNodeByWorldPosition(_unitPathfinding.MovementTiles[i].transform.position);
 
-                // Если нода свободна для передвижения и в ней нет юнита
-                if (node.isWalkable && node.isOccupied == false)
-                {
-                    _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.green;
-                }
-                // Если 
-                else if (node.isWalkable == false && node.isOccupied == false && node.occupiedByUnit.GetComponent<Unit>()._unitSide == _unit._unitSide)
-                {
-                    _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.white;
-                }
-                // Если нода занята и занята врагом, то красим ее в красный цвет
-                else if (node.isWalkable == false && node.isOccupied && node.occupiedByUnit.GetComponent<Unit>()._unitSide != _unit._unitSide)
-                {
-                    _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.red;
+                    // Если нода свободна для передвижения и в ней нет юнита
+                    if (node.isWalkable && node.isOccupied == false)
+                    {
+                        _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.green;
+                    }
+                    // Если 
+                    else if (node.isWalkable == false && node.isOccupied == false && node.occupiedByUnit.GetComponent<Unit>()._unitSide == _unit._unitSide)
+                    {
+                        _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.white;
+                    }
+                    // Если нода занята и занята врагом, то красим ее в красный цвет
+                    else if (node.isWalkable == false && node.isOccupied && node.occupiedByUnit.GetComponent<Unit>()._unitSide != _unit._unitSide)
+                    {
+                        _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.red;
+                    }
                 }
             }
+            
         }
         else
         {
-            for (int i = 0; i < _unitPathfinding.MovementTiles.Count; i++)
+            if (_unitPathfinding.MovementTiles != null)
             {
-                node = _battlegroundGridManager.GetNodeByWorldPosition(_unitPathfinding.MovementTiles[i].transform.position);
-                _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.white;
+                for (int i = 0; i < _unitPathfinding.MovementTiles.Count; i++)
+                {
+                    node = _battlegroundGridManager.GetNodeByWorldPosition(_unitPathfinding.MovementTiles[i].transform.position);
+                    _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.white;
+                }
+                _unitPathfinding.MovementTiles.Clear();
             }
+            
         }
     }
 }

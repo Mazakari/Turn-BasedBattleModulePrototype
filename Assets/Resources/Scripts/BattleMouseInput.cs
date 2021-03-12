@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿// Roman Baranov 06.03.2021
 using UnityEngine;
 
 public class BattleMouseInput : MonoBehaviour
@@ -8,10 +7,15 @@ public class BattleMouseInput : MonoBehaviour
 
     private BattlegroundGridManager _battlegroundGridManager = null;
 
+    private UnitsManager _unitsManager = null;
+
+    private UnitPathfinding _unitPathfinding = null;
+
     // Start is called before the first frame update
     private void Awake()
     {
         _battlegroundGridManager = FindObjectOfType<BattlegroundGridManager>();
+        _unitsManager = FindObjectOfType<UnitsManager>();
     }
 
     // Update is called once per frame
@@ -35,36 +39,11 @@ public class BattleMouseInput : MonoBehaviour
             UnselectUnit();
         }
     }
-    
-    private void SelectUnit()
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit, 10f))
-        {
-            BattlegroundGridNode targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
-
-            if (hit.transform.GetComponent<Unit>() && _selectedObject == null)
-            {
-                _selectedObject = hit.transform.gameObject;
-                _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(true);
-                hit.transform.GetComponent<Unit>().isSelected = true;
-            }
-            else if (targetNode.isOccupied == false && targetNode.isWalkable && _selectedObject)
-            {
-                BattlegroundGridNode unitNode = _battlegroundGridManager.GetNodeByWorldPosition(_selectedObject.transform.position);
-                unitNode.isOccupied = false;
-                _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
-                _selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(_selectedObject.transform.position, hit.transform.position);
-                _selectedObject.GetComponent<Unit>().isSelected = false;
-                _selectedObject = null;
-                Debug.Log($"Unit {hit.transform.name} new move poin is {hit.transform.position}");
-            }
-        }
-    }
-
-    private void UnselectUnit()
+    /// <summary>
+    /// Снимает выделение с выбранного в данный момент юнита
+    /// </summary>
+    public void UnselectUnit()
     {
         if (_selectedObject != null && _selectedObject.GetComponent<Unit>())
         {
@@ -72,5 +51,45 @@ public class BattleMouseInput : MonoBehaviour
             _selectedObject.GetComponent<Unit>().isSelected = false;
         }
         _selectedObject = null;
+    }
+
+    /// <summary>
+    /// Выбирает юнит, на который наведен курсор мыши, либо тайл, в который нужно двигаться выбранному юниту
+    /// </summary>
+    private void SelectUnit()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit, 10f))
+        {
+            Debug.Log($"Mouse clock point {hit.transform.position}");
+            BattlegroundGridNode targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
+            // Выбираем юнит
+            if (hit.transform.GetComponent<Unit>() && _selectedObject == null && _unitsManager.isUnitMoving == false && hit.transform.GetComponent<Unit>().isMovesLeft)
+            {
+                _selectedObject = hit.transform.gameObject;
+                hit.transform.GetComponent<Unit>().isSelected = true;
+                _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(true);
+            }
+            // Выбираем тайл для перемещения юнита
+            else if (targetNode.isOccupied == false && targetNode.isWalkable && _selectedObject)
+            {
+                BattlegroundGridNode unitNode = _battlegroundGridManager.GetNodeByWorldPosition(_selectedObject.transform.position);
+                targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
+                int moveDistance = _selectedObject.GetComponent<Unit>().UnitMoveDistance;
+                _unitPathfinding = _selectedObject.GetComponent<UnitPathfinding>();
+
+                unitNode.isOccupied = false;
+                _selectedObject.GetComponent<Unit>().isSelected = false;
+                //Получаем путь с клетками для юнита 
+                _unitPathfinding.Pathfinding(unitNode, targetNode, moveDistance);
+                Debug.Log($"UnitMovePath = {_unitPathfinding.UnitMovePath}");
+                Debug.Log($"UnitMovePath.Count = {_unitPathfinding.UnitMovePath.Count}");
+                _selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(_selectedObject.transform.position, hit.transform.position);
+                _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
+                _selectedObject = null;
+            }
+        }
     }
 }

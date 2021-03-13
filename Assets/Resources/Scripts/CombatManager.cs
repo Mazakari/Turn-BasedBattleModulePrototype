@@ -7,8 +7,8 @@ public class CombatManager : MonoBehaviour
 {
     // Автоматический переход хода, если все юниты походили 
     // Передавать ход по кнопке
-    // Не давать выбирать юниты в процессе перемещения
-    // 
+
+
     public enum Turn
     {
         GreenTurn,
@@ -36,11 +36,6 @@ public class CombatManager : MonoBehaviour
     private CombatGuiManager _combatGuiManager = null;
 
     private BattleMouseInput _battleMouseInput = null;
-
-    /// <summary>
-    /// Список с сторонами юнитов
-    /// </summary>
-   
 
     private void Awake()
     {

@@ -48,6 +48,7 @@ public class UnitPathfinding : MonoBehaviour
     /// <param name="moveRadius">Радиус перемещения юнита</param>
     public void Pathfinding(BattlegroundGridNode startNode, BattlegroundGridNode targetNode, int moveRadius)
     {
+        _tempPathfindNodes.Clear();
         _unitMovePath.Clear();
         for (int i = 0; i < moveRadius;)
         {
@@ -77,7 +78,7 @@ public class UnitPathfinding : MonoBehaviour
                 node = _battlegroundGridManager.GetNodeByWorldPosition(new Vector3(startNode.WorldPosition.x, startNode.WorldPosition.y, startNode.WorldPosition.z + (i + 1)));
                 if (isPathfinding)
                 {
-                    if (node.isWalkable)
+                    if (node.isWalkable && !node.isOccupied)
                     {
                         _tempPathfindNodes.Add(node.NodeTile);
                     }
@@ -107,7 +108,7 @@ public class UnitPathfinding : MonoBehaviour
                 node = _battlegroundGridManager.GetNodeByWorldPosition(new Vector3(startNode.WorldPosition.x, startNode.WorldPosition.y, startNode.WorldPosition.z - (i + 1)));
                 if (isPathfinding)
                 {
-                    if (node.isWalkable)
+                    if (node.isWalkable && !node.isOccupied)
                     {
                         _tempPathfindNodes.Add(node.NodeTile);
                     }
@@ -137,9 +138,14 @@ public class UnitPathfinding : MonoBehaviour
                 node = _battlegroundGridManager.GetNodeByWorldPosition(new Vector3(startNode.WorldPosition.x - (i + 1), startNode.WorldPosition.y, startNode.WorldPosition.z));
                 if (isPathfinding)
                 {
-                    if (node.isWalkable)
+                    if (node.isWalkable && !node.isOccupied)
                     {
                         _tempPathfindNodes.Add(node.NodeTile);
+                        CheckTop(node, moveRadius, true);
+                        CheckBottom(node, moveRadius, true);
+                    }
+                    else if(node.isWalkable && node.isOccupied)
+                    {
                         CheckTop(node, moveRadius, true);
                         CheckBottom(node, moveRadius, true);
                     }
@@ -171,9 +177,14 @@ public class UnitPathfinding : MonoBehaviour
                 node = _battlegroundGridManager.GetNodeByWorldPosition(new Vector3(startNode.WorldPosition.x + (i + 1), startNode.WorldPosition.y, startNode.WorldPosition.z));
                 if (isPathfinding)
                 {
-                    if (node.isWalkable)
+                    if (node.isWalkable && !node.isOccupied)
                     {
                         _tempPathfindNodes.Add(node.NodeTile);
+                        CheckTop(node, moveRadius, true);
+                        CheckBottom(node, moveRadius, true);
+                    }
+                    else if (node.isWalkable && node.isOccupied)
+                    {
                         CheckTop(node, moveRadius, true);
                         CheckBottom(node, moveRadius, true);
                     }

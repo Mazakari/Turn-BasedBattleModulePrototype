@@ -84,9 +84,7 @@ public class BattleMouseInput : MonoBehaviour
                 _selectedObject.GetComponent<Unit>().isSelected = false;
                 //Получаем путь с клетками для юнита 
                 _unitPathfinding.Pathfinding(unitNode, targetNode, moveDistance);
-                Debug.Log($"UnitMovePath = {_unitPathfinding.UnitMovePath}");
-                Debug.Log($"UnitMovePath.Count = {_unitPathfinding.UnitMovePath.Count}");
-                _selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(_selectedObject.transform.position, hit.transform.position);
+                _selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(unitNode, targetNode);
                 _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
                 _selectedObject = null;
             }

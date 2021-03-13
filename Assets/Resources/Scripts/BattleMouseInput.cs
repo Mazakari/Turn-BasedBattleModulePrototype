@@ -63,7 +63,7 @@ public class BattleMouseInput : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 10f))
         {
-            Debug.Log($"Mouse clock point {hit.transform.position}");
+            //Debug.Log($"Mouse clock point {hit.transform.position}");
             BattlegroundGridNode targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
             // Выбираем юнит
             if (hit.transform.GetComponent<Unit>() && _selectedObject == null && _unitsManager.isUnitMoving == false && hit.transform.GetComponent<Unit>().isMovesLeft)

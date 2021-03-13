@@ -18,7 +18,7 @@ public class Unit : MonoBehaviour
         Brown
     }
 
-    public UnitSide _unitSide;// Сторона конфликта юнита
+    public UnitSide unitSide;// Сторона конфликта юнита
 
     private int _unitMoveDistance = 2;// Максимальное количество ходов юнита в клетках
     /// <summary>
@@ -38,7 +38,7 @@ public class Unit : MonoBehaviour
     /// <param name="enemyUnit"></param>
     public void Attack(Unit enemyUnit)
     {
-        if (_unitSide != enemyUnit._unitSide)
+        if (unitSide != enemyUnit.unitSide)
         {
             if (enemyUnit._unitCurrentHealth - _unitAttack > 0.0001f)
             {

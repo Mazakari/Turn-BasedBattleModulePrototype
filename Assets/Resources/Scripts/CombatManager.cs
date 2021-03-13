@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    // Автоматический переход хода, если все юниты походили 
-    // Передавать ход по кнопке
-
-
     public enum Turn
     {
         GreenTurn,
@@ -47,7 +43,6 @@ public class CombatManager : MonoBehaviour
         currentGameState = GameState.GameInProgress;
     }
 
-    //TO DO! Сделать полноценный  метод и добавить метод EndTurn()
     /// <summary>
     /// Обновляет данные юнитов в начале хода
     /// </summary>
@@ -59,6 +54,37 @@ public class CombatManager : MonoBehaviour
         SwitchCurrentSide();
         _combatGuiManager.SwitchCurrentSideTurnText();
         _combatGuiManager.UpdateTurnNumberText(); 
+    }
+
+    public void CheckEndTurn(Unit.UnitSide unitSide)
+    {
+        if (currentTurn == CombatManager.Turn.GreenTurn && unitSide == Unit.UnitSide.Green)
+        {
+            for (int i = 0; i < _unitsManager.GreenUnits.Count; i++)
+            {
+                if (_unitsManager.GreenUnits[i].GetComponent<Unit>().isMovesLeft)
+                {
+                    Debug.Log($"Green Unit is Moves Left{_unitsManager.GreenUnits[i].name}");
+                    return;
+                }
+            }
+
+            EndTurn();
+        }
+
+        if (currentTurn == CombatManager.Turn.BrownTurn && unitSide == Unit.UnitSide.Brown)
+        {
+            for (int i = 0; i < _unitsManager.BrownUnits.Count; i++)
+            {
+                if (_unitsManager.BrownUnits[i].GetComponent<Unit>().isMovesLeft)
+                {
+                    Debug.Log($"Brown Unit is Moves Left{_unitsManager.BrownUnits[i].name}");
+                    return;
+                }
+            }
+
+            EndTurn();
+        }
     }
 
     /// <summary>

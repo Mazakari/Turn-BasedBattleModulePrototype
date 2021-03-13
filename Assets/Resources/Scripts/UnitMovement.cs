@@ -15,6 +15,8 @@ public class UnitMovement : MonoBehaviour
 
     private UnitPathfinding _unitPathfinding = null;
 
+    private CombatManager _combatManager = null;
+
     private Unit _unit = null;
 
     private void Awake()
@@ -22,6 +24,7 @@ public class UnitMovement : MonoBehaviour
         _unit = GetComponent<Unit>();
         _battlegroundGridManager = FindObjectOfType<BattlegroundGridManager>();
         _unitsManager = FindObjectOfType<UnitsManager>();
+        _combatManager = FindObjectOfType<CombatManager>();
     }
 
     /// <summary>
@@ -76,6 +79,7 @@ public class UnitMovement : MonoBehaviour
         endNode.NodeTile.GetComponent<MeshRenderer>().material.color = Color.white;// Костылик
         _unit.isMovesLeft = false;
         _unitsManager.isUnitMoving = false;
+        _combatManager.CheckEndTurn(_unit.unitSide);
         yield return null;
     }
 }

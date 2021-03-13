@@ -84,12 +84,12 @@ public class GridTileHighlight : MonoBehaviour
                         _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.green;
                     }
                     // Если 
-                    else if (node.isWalkable == false && node.isOccupied == false && node.occupiedByUnit.GetComponent<Unit>()._unitSide == _unit._unitSide)
+                    else if (node.isWalkable == false && node.isOccupied == false && node.occupiedByUnit.GetComponent<Unit>().unitSide == _unit.unitSide)
                     {
                         _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.white;
                     }
                     // Если нода занята и занята врагом, то красим ее в красный цвет
-                    else if (node.isWalkable == false && node.isOccupied && node.occupiedByUnit.GetComponent<Unit>()._unitSide != _unit._unitSide)
+                    else if (node.isWalkable == false && node.isOccupied && node.occupiedByUnit.GetComponent<Unit>().unitSide != _unit.unitSide)
                     {
                         _unitPathfinding.MovementTiles[i].GetComponent<MeshRenderer>().material.color = Color.red;
                     }

@@ -54,7 +54,18 @@ public class BattleMouseInput : MonoBehaviour
     }
 
     /// <summary>
-    /// Выбирает юнит, на который наведен курсор мыши, либо тайл, в который нужно двигаться выбранному юниту
+    /// Автоматически выбирает следующий доступный юнит
+    /// </summary>
+    /// <param name="selectedObject"></param>
+    public void AutoSelectUnit(GameObject selectedObject)
+    {
+        _selectedObject = selectedObject.transform.gameObject;
+        _selectedObject.GetComponent<Unit>().isSelected = true;
+        _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(true);
+    }
+
+    /// <summary>
+    /// Обрабатывает выбор юнита и точку его передвижения
     /// </summary>
     private void SelectUnit()
     {
@@ -65,28 +76,53 @@ public class BattleMouseInput : MonoBehaviour
         {
             //Debug.Log($"Mouse clock point {hit.transform.position}");
             BattlegroundGridNode targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
+            //Debug.Log($"targetNode.isWalkable = {targetNode.isWalkable}");
             // Выбираем юнит
-            if (hit.transform.GetComponent<Unit>() && _selectedObject == null && _unitsManager.isUnitMoving == false && hit.transform.GetComponent<Unit>().isMovesLeft)
+            if (hit.transform.GetComponent<Unit>() && _selectedObject == null && !_unitsManager.isUnitMoving && hit.transform.GetComponent<Unit>().isMovesLeft)
             {
                 _selectedObject = hit.transform.gameObject;
-                hit.transform.GetComponent<Unit>().isSelected = true;
+                _selectedObject.GetComponent<Unit>().isSelected = true;
                 _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(true);
             }
             // Выбираем тайл для перемещения юнита
-            else if (targetNode.isOccupied == false && targetNode.isWalkable && _selectedObject)
+            else if (!targetNode.isOccupied && targetNode.isWalkable && _selectedObject)
             {
                 BattlegroundGridNode unitNode = _battlegroundGridManager.GetNodeByWorldPosition(_selectedObject.transform.position);
-                targetNode = _battlegroundGridManager.GetNodeByWorldPosition(hit.transform.position);
-                int moveDistance = _selectedObject.GetComponent<Unit>().UnitMoveDistance;
                 _unitPathfinding = _selectedObject.GetComponent<UnitPathfinding>();
 
                 unitNode.isOccupied = false;
                 _selectedObject.GetComponent<Unit>().isSelected = false;
                 //Получаем путь с клетками для юнита 
-                _unitPathfinding.Pathfinding(unitNode, targetNode, moveDistance);
+                _unitPathfinding.Pathfinding(unitNode, targetNode);
                 _selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(unitNode, targetNode);
                 _selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
                 _selectedObject = null;
+            }
+            // Выбираем юнит и атакуем, если он вражеский
+            else if (targetNode.isOccupied && targetNode.isWalkable && _selectedObject && hit.transform.gameObject.GetComponent<Unit>())
+            {
+                Unit enemyUnit = hit.transform.gameObject.GetComponent<Unit>();
+                Unit unit = _selectedObject.GetComponent<Unit>();
+                Debug.Log($"unit.unitSide = {unit.unitSide}");
+                Debug.Log($"enemyUnit.unitSide = {enemyUnit.unitSide}");
+
+                if (unit.unitSide != enemyUnit.unitSide)
+                {
+                    // TO DO
+                    // Ищем путь к ноде вражеского юнита
+                    // Двигаемся в ноду с вражеским юнитом
+                    // Атакуем вражеский юнит
+                    // Возвращаем юнит на предыдущую клетку
+
+                    //_unitPathfinding.Pathfinding(unit.occupiedNode, enemyUnit.occupiedNode);
+                    //_selectedObject.GetComponent<UnitMovement>().MoveUnitToTarget(unitNode, targetNode);
+                    //_selectedObject.GetComponent<GridTileHighlight>().ShowMoveTiles(false);
+                    //_selectedObject = null;
+                    Debug.Log($"Attack = {unit.UnitAttack}");
+                    Debug.Log($"Enemy Health = {enemyUnit.UnitCurrentHealth}");
+                    unit.Attack(enemyUnit);
+                    UnselectUnit();
+                }
             }
         }
     }

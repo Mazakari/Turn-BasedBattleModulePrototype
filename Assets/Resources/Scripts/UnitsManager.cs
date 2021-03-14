@@ -71,8 +71,9 @@ public class UnitsManager : MonoBehaviour
             for (int i = 0; i < _greenUnitsAmount; i++)
             {
                 units.Add(Instantiate(unitPrefab, new Vector3(0, 0, zValue), Quaternion.identity, parentObject.transform));
-                units[i].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
+                units[i].GetComponent<Unit>().occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
                 units[i].GetComponent<Unit>().isMovesLeft = true;
+                units[i].GetComponent<Unit>().unitSide = Unit.UnitSide.Green;
                 node = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
                 node.occupiedByUnit = units[i];
                 node.isOccupied = true;
@@ -90,8 +91,9 @@ public class UnitsManager : MonoBehaviour
             for (int i = 0; i < _brownUnitsAmount; i++)
             {
                 units.Add(Instantiate(unitPrefab, new Vector3(xValue, 0, zValue), Quaternion.identity, parentObject.transform));
-                units[i].GetComponent<Unit>()._occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
+                units[i].GetComponent<Unit>().occupiedNode = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
                 units[i].GetComponent<Unit>().isMovesLeft = false;
+                units[i].GetComponent<Unit>().unitSide = Unit.UnitSide.Brown;
                 node = _battlegroundGridManager.GetNodeByWorldPosition(units[i].transform.position);
                 node.occupiedByUnit = units[i];
                 node.isOccupied = true;

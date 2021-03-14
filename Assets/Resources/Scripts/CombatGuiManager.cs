@@ -28,7 +28,6 @@ public class CombatGuiManager : MonoBehaviour
 
     private void Start()
     {
-
         SwitchCurrentSideTurnText();
         UpdateTurnNumberText();
     }

@@ -33,11 +33,14 @@ public class CombatManager : MonoBehaviour
 
     private BattleMouseInput _battleMouseInput = null;
 
+    private BattlegroundGridManager _battlegroundGridManager = null;
+
     private void Awake()
     {
         _unitsManager = FindObjectOfType<UnitsManager>();
         _combatGuiManager = FindObjectOfType<CombatGuiManager>();
         _battleMouseInput = FindObjectOfType<BattleMouseInput>();
+        _battlegroundGridManager = FindObjectOfType<BattlegroundGridManager>();
 
         currentTurn = Turn.GreenTurn;// TO DO Можно рандомизировать первый ход
         currentGameState = GameState.GameInProgress;
@@ -51,11 +54,18 @@ public class CombatManager : MonoBehaviour
         _battleMouseInput.UnselectUnit();
         _currentTurnCounter++;
         
+
         SwitchCurrentSide();
+        _battlegroundGridManager.ResetWalkableNodes();// Костылик для фикса атаки юнита вне диапазона передвижения
+
         _combatGuiManager.SwitchCurrentSideTurnText();
         _combatGuiManager.UpdateTurnNumberText(); 
     }
 
+    /// <summary>
+    /// Проверяет все ли юниты указанной стороны походили и автоматически завершает ее ход, если да
+    /// </summary>
+    /// <param name="unitSide">Юнит текущей ходящей стороны</param>
     public void CheckEndTurn(Unit.UnitSide unitSide)
     {
         if (currentTurn == CombatManager.Turn.GreenTurn && unitSide == Unit.UnitSide.Green)
@@ -64,7 +74,8 @@ public class CombatManager : MonoBehaviour
             {
                 if (_unitsManager.GreenUnits[i].GetComponent<Unit>().isMovesLeft)
                 {
-                    Debug.Log($"Green Unit is Moves Left{_unitsManager.GreenUnits[i].name}");
+                    // Выбирать следующий юнит
+                    _battleMouseInput.AutoSelectUnit(_unitsManager.GreenUnits[i]);
                     return;
                 }
             }
@@ -78,7 +89,8 @@ public class CombatManager : MonoBehaviour
             {
                 if (_unitsManager.BrownUnits[i].GetComponent<Unit>().isMovesLeft)
                 {
-                    Debug.Log($"Brown Unit is Moves Left{_unitsManager.BrownUnits[i].name}");
+                    // Выбирать следующий юнит
+                    _battleMouseInput.AutoSelectUnit(_unitsManager.BrownUnits[i]);
                     return;
                 }
             }
@@ -104,10 +116,13 @@ public class CombatManager : MonoBehaviour
         SwitchMovesLeft(currentTurn);
     }
 
-    // // TO DO Нужно свитчить ходы 
-    private void SwitchMovesLeft(Turn turn)
+    /// <summary>
+    /// Активирует ходы для противоположной стороны
+    /// </summary>
+    /// <param name="currentTurn">Текущий ход</param>
+    private void SwitchMovesLeft(Turn currentTurn)
     {
-        if (turn == CombatManager.Turn.GreenTurn)
+        if (currentTurn == CombatManager.Turn.GreenTurn)
         {
             for (int i = 0; i < _unitsManager.BrownUnits.Count; i++)
             {
@@ -115,7 +130,7 @@ public class CombatManager : MonoBehaviour
                 _unitsManager.BrownUnits[i].GetComponent<Unit>().isMovesLeft = false;
             }
         }
-        else if (turn == CombatManager.Turn.BrownTurn)
+        else if (currentTurn == CombatManager.Turn.BrownTurn)
         {
             for (int i = 0; i < _unitsManager.GreenUnits.Count; i++)
             {

@@ -45,20 +45,30 @@ public class UnitPathfinding : MonoBehaviour
     /// </summary>
     /// <param name="startNode">Исходная нода</param>
     /// <param name="targetNode">Целевая нода</param>
-    /// <param name="moveRadius">Радиус перемещения юнита</param>
-    public void Pathfinding(BattlegroundGridNode startNode, BattlegroundGridNode targetNode, int moveRadius)
+    public void Pathfinding(BattlegroundGridNode startNode, BattlegroundGridNode targetNode)
     {
         _tempPathfindNodes.Clear();
         _unitMovePath.Clear();
-        for (int i = 0; i < moveRadius;)
+        // TO DO Крэш вот при такой ситуации https://prnt.sc/10kojdx
+        for (int i = 0; startNode != targetNode;)
         {
-            CheckTop(startNode, i + 1, true);
-            CheckBottom(startNode, i + 1, true);
-            CheckLeft(startNode, i + 1, true);
-            CheckRight(startNode, i + 1, true);
+            CheckTop(startNode, 1, true);
+            CheckBottom(startNode, 1, true);
+            CheckLeft(startNode, 1, true);
+            CheckRight(startNode, 1, true);
 
-            _unitMovePath.Add(FindClosestNode(_tempPathfindNodes, targetNode));
+            if (FindClosestNode(_tempPathfindNodes, targetNode))
+            {
+                _unitMovePath.Add(FindClosestNode(_tempPathfindNodes, targetNode));
+                startNode = _battlegroundGridManager.GetNodeByWorldPosition(_unitMovePath[_unitMovePath.Count - 1].transform.position);
+            }
+
             i++;
+        }
+        Debug.Log($"Move to node = {targetNode.WorldPosition}");
+        for (int i = 0; i < _unitMovePath.Count; i++)
+        {
+            Debug.Log($"Step {i+1} = {_unitMovePath[i].transform.position}");
         }
     }
 

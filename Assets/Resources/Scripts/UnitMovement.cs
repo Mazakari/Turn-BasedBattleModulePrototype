@@ -74,12 +74,14 @@ public class UnitMovement : MonoBehaviour
         }
 
         // Debug
+        _unit.isMovesLeft = false;
+        _unit.occupiedNode = endNode;
+        Debug.Log($"Unit occupied node is = {_unit.occupiedNode.WorldPosition}");
         endNode.isOccupied = true;
         endNode.isWalkable = false;
         endNode.NodeTile.GetComponent<MeshRenderer>().material.color = Color.white;// Костылик
-        _unit.isMovesLeft = false;
-        _unitsManager.isUnitMoving = false;
         _combatManager.CheckEndTurn(_unit.unitSide);
+        _unitsManager.isUnitMoving = false;
         yield return null;
     }
 }

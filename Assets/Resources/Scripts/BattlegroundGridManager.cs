@@ -40,6 +40,17 @@ public class BattlegroundGridManager : MonoBehaviour
         return null;
     }
 
+    public void ResetWalkableNodes()
+    {
+        for (int i = 0; i < _grid.GetLength(0); i++)
+        {
+            for (int j = 0; j < _grid.GetLength(1); j++)
+            {
+                _grid[i, j].isWalkable = false;
+            }
+        }
+    }
+
     /// <summary>
     /// Создает сетку с нодами в указанном родительском объекте
     /// </summary>

@@ -26,7 +26,6 @@ public class GridTileHighlight : MonoBehaviour
 
             _unitStartMovePosition = gameObject.transform.position;
         }
-
         _meshRenderer = GetComponent<MeshRenderer>();
 
         _defaultColor = _meshRenderer.material.color;
